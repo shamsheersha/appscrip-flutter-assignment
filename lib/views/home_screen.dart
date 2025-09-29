@@ -3,6 +3,7 @@ import 'package:appscrip_users/views/userdetail_screen.dart';
 import 'package:appscrip_users/widgets/user_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shimmer/shimmer.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -70,19 +71,7 @@ class _HomeScreenState extends State<HomeScreen> {
       body: Consumer<UserViewModel>(
         builder: (context, viewModel, child) {
           if (viewModel.isLoading && viewModel.users.isEmpty) {
-            return const Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  CircularProgressIndicator(color: Colors.blue,),
-                  SizedBox(height: 16),
-                  Text(
-                    'Loading users...',
-                    style: TextStyle(fontSize: 16, color: Colors.grey),
-                  ),
-                ],
-              ),
-            );
+            return buildLoadingList();
           }
 
           if (viewModel.hasError) {
@@ -199,17 +188,14 @@ class _HomeScreenState extends State<HomeScreen> {
                     itemCount: viewModel.users.length,
                     itemBuilder: (context, index) {
                       final user = viewModel.users[index];
-                      return UserTile(
-                        user: user,
-                        onTap: () {
+                      return AnimatedUserTile(user: user, onTap:  () {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
                               builder: (_) => UserDetailScreen(user: user),
                             ),
                           );
-                        },
-                      );
+                        }, index: index);
                     },
                   ),
           );
@@ -217,6 +203,36 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
+
+Widget buildLoadingList() {
+  return ListView.builder(
+    padding: const EdgeInsets.all(16),
+    itemCount: 8,
+    itemBuilder: (context, index) {
+      return Shimmer.fromColors(
+        baseColor: Colors.grey[300]!,
+        highlightColor: Colors.grey[100]!,
+        child: Card(
+          margin: const EdgeInsets.only(bottom: 12),
+          child: ListTile(
+            leading: CircleAvatar(
+              backgroundColor: Colors.grey[300],
+            ),
+            title: Container(
+              height: 14,
+              color: Colors.grey[300],
+            ),
+            subtitle: Container(
+              margin: const EdgeInsets.only(top: 8),
+              height: 12,
+              color: Colors.grey[200],
+            ),
+          ),
+        ),
+      );
+    },
+  );
+}
 
   @override
   void dispose() {

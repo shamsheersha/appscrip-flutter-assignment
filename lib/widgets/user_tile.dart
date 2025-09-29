@@ -1,27 +1,51 @@
-
-
 import 'package:appscrip_users/models/user_model.dart';
+import 'package:appscrip_users/view_models/user_viewmodel.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-/// Custom widget for displaying a user in a list
-class UserTile extends StatelessWidget {
+class AnimatedUserTile extends StatelessWidget {
   final UserModel user;
   final VoidCallback onTap;
+  final int index;
 
-  const UserTile({
+  const AnimatedUserTile({
     super.key,
     required this.user,
     required this.onTap,
+    required this.index,
   });
 
   @override
   Widget build(BuildContext context) {
+    return TweenAnimationBuilder(
+      tween: Tween<Offset>(begin: const Offset(0, 0.3), end: Offset.zero),
+      duration: Duration(milliseconds: 300 + index * 100), // stagger effect
+      builder: (context, Offset offset, child) {
+        return Transform.translate(
+          offset: offset * 50, // slide distance
+          child: Opacity(opacity: 1 - offset.dy, child: child),
+        );
+      },
+      child: UserTile(user: user, onTap: onTap),
+    );
+  }
+}
+
+class UserTile extends StatelessWidget {
+  final UserModel user;
+  final VoidCallback onTap;
+
+  const UserTile({super.key, required this.user, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    final viewModel = context.watch<UserViewModel>();
+    final isFavorite = viewModel.isFavorite(user);
+
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
       elevation: 2,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(12),
@@ -65,11 +89,7 @@ class UserTile extends StatelessWidget {
                     const SizedBox(height: 4),
                     Row(
                       children: [
-                        Icon(
-                          Icons.email,
-                          size: 14,
-                          color: Colors.grey[600],
-                        ),
+                        Icon(Icons.email, size: 14, color: Colors.grey[600]),
                         const SizedBox(width: 4),
                         Expanded(
                           child: Text(
@@ -87,11 +107,7 @@ class UserTile extends StatelessWidget {
                     const SizedBox(height: 4),
                     Row(
                       children: [
-                        Icon(
-                          Icons.business,
-                          size: 14,
-                          color: Colors.grey[600],
-                        ),
+                        Icon(Icons.business, size: 14, color: Colors.grey[600]),
                         const SizedBox(width: 4),
                         Expanded(
                           child: Text(
@@ -110,12 +126,17 @@ class UserTile extends StatelessWidget {
                 ),
               ),
 
-              // Arrow icon
-              Icon(
-                Icons.arrow_forward_ios,
-                size: 16,
-                color: Colors.grey[400],
+              // Favorite icon
+              IconButton(
+                icon: Icon(
+                  isFavorite ? Icons.favorite : Icons.favorite_border,
+                  color: isFavorite ? Colors.red : Colors.grey,
+                ),
+                onPressed: () => viewModel.toggleFavorite(user),
               ),
+
+              // Arrow icon
+              Icon(Icons.arrow_forward_ios, size: 16, color: Colors.grey[400]),
             ],
           ),
         ),
