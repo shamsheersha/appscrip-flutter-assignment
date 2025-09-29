@@ -20,11 +20,16 @@ class MyApp extends StatelessWidget {
           primarySwatch: Colors.blue,
           primaryColor: const Color(0xFF2196F3),
           scaffoldBackgroundColor: Colors.white,
-          appBarTheme:  AppBarTheme(
+          appBarTheme: AppBarTheme(
             backgroundColor: Color(0xFF2196F3),
             foregroundColor: Colors.white,
             centerTitle: true,
             elevation: 0,
+          ),
+          textSelectionTheme: const TextSelectionThemeData(
+            cursorColor: Colors.white,
+            selectionColor: Colors.lightBlue,
+            selectionHandleColor: Colors.white,
           ),
           cardTheme: CardThemeData(
             color: Colors.white,
@@ -34,7 +39,7 @@ class MyApp extends StatelessWidget {
               borderRadius: BorderRadius.circular(10),
             ),
           ),
-          useMaterial3: true
+          useMaterial3: true,
         ),
         debugShowCheckedModeBanner: false,
         home: SplashScreen(),
@@ -42,4 +47,3 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-

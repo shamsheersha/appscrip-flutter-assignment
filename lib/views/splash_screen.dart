@@ -81,7 +81,7 @@ class _SplashScreenState extends State<SplashScreen>
                 ),
                 const SizedBox(height: 32),
                 const Text(
-                  'User Directory',
+                  'User Profiles',
                   style: TextStyle(
                     fontSize: 32,
                     fontWeight: FontWeight.bold,
