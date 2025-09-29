@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:appscrip_users/models/user_model.dart';
 import 'package:http/http.dart' as http;
@@ -12,8 +13,8 @@ class ApiService {
       final response = await http
           .get(Uri.parse("$_baseUrl/users"))
           .timeout(timeOutDuration);
-
-      if (response.body == 200) {
+      log(response.body);
+      if (response.statusCode == 200) {
         final List<dynamic> data = json.decode(response.body);
         return data.map((json) => UserModel.fromJson(json)).toList();
       } else if (response.statusCode == 404) {
@@ -29,6 +30,26 @@ class ApiService {
       if (e.toString().contains('TimeoutException')) {
         throw Exception('Request timed out. Please try again later.');
       }
+      rethrow;
+    }
+  }
+
+
+  Future<UserModel> fetchUserById(int id) async {
+    try {
+      final response = await http
+          .get(
+            Uri.parse('$_baseUrl/users/$id'),
+          )
+          .timeout(timeOutDuration);
+        log(response.body);
+      if (response.statusCode == 200) {
+        log('Response: ${response.body}');
+        return UserModel.fromJson(json.decode(response.body));
+      } else {
+        throw Exception('Failed to load user details');
+      }
+    } catch (e) {
       rethrow;
     }
   }
