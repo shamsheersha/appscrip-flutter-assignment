@@ -10,10 +10,10 @@ A Flutter application that fetches and displays user data from a REST API with a
 <img src="screenshots/splash_screen.jpg" width="300" />
 
 ### User List
-<img src="screenshots/users_list_screen.jpg" width="300" />
+<img src="screenshots/users_list.jpg" width="300" />
 
 ### User Detail
-<img src="screenshots/user_detail_screen.jpg" width="300" />
+<img src="screenshots/user_details.jpg" width="300" />
 
 ### Search
 <img src="screenshots/search.jpg" width="300" />
